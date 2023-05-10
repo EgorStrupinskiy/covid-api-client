@@ -1,0 +1,48 @@
+<form class="form-container" #myForm="ngForm" (ngSubmit)="onSubmit(myForm)">
+  <div class="form-group">
+    <label for="countryList">Country list:</label>
+    <select class="drop-list" id="countryList" [(ngModel)]="selectedCountries" multiple name="countryList">
+      <option *ngFor="let country of countryList" [value]="country.Country">{{ country.Country }} ({{ country.ISO2 }})</option>
+    </select>
+
+
+  </div>
+
+
+  <div class="form-group">
+    <label for="fromDate">From:</label>
+    <input type="date" id="fromDate" [(ngModel)]="fromDate" name="fromDate" class="date-picker"
+           required
+           [ngClass]="{'is-invalid': myForm.controls['fromDate']?.invalid && myForm.controls['fromDate'].touched}"
+           #fromDateInput="ngModel"
+           (ngModelChange)="checkDatesValidity(myForm, fromDateInput, toDateInput)">
+    <div *ngIf="myForm.controls['fromDate']?.invalid && myForm.controls['fromDate']?.touched" class="invalid-feedback">
+      Please select a valid 'From' date.
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="toDate">To:</label>
+    <input type="date" id="toDate" [(ngModel)]="toDate" name="toDate" class="date-picker"
+           required
+           [ngClass]="{'is-invalid': myForm.controls['toDate']?.invalid && myForm.controls['toDate'].touched}"
+           #toDateInput="ngModel"
+           (ngModelChange)="checkDatesValidity(myForm, fromDateInput, toDateInput)"
+           [value]="toDate">
+    <div *ngIf="myForm.controls['toDate']?.invalid && myForm.controls['toDate']?.touched" class="invalid-feedback">
+      Please select a valid 'To' date.
+    </div>
+  </div>
+
+  <div class="form-group">
+    <button type="submit" class="submit-button" [disabled]="myForm.invalid || !datesAreValid">Submit</button>
+    <br>
+    <div *ngIf="isLoading" class="loading-indicator">Loading...</div>
+  </div>
+</form>
+
+<div class="result-container" *ngFor="let item of result">
+  <h2>{{ item.country }}</h2>
+  <p>Max cases: {{ item.maxCases }}</p>
+  <p>Min cases: {{ item.minCases }}</p>
+</div>
